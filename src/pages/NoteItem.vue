@@ -3,7 +3,9 @@
 
     <div class="toolbar">
       <button>
-        <span class="icon-back"></span>
+        <router-link to="/">
+          <span class="icon-back"></span>
+        </router-link>
       </button>
 
       <div class="toolbar__right">
@@ -28,17 +30,26 @@
 
     <div class="note__header">
 
-      <div  v-show="isEditing">
-        <button>
+      <div class="edit-panel__wrapper note__control" v-show="isEditing">
+        <button
+          @click="doneEdit()"
+          class="edit note__button"
+        >
           <span :class="'icon-positive'"></span>
         </button>
-        <button>
+        <button
+          @click="cancelEdit()"
+          class="remove note__button"
+        >
           <span :class="'icon-negative'"></span>
         </button>
       </div>
 
-      <div  v-show="!isEditing">
-        <button>
+      <div class="edit-panel__wrapper note__control" v-show="!isEditing">
+        <button
+          class="note__button"
+          @click="startEdit()"
+        >
           <span :class="'icon-edit'"></span>
         </button>
       </div>
@@ -47,6 +58,7 @@
         ref="input"
         class="note__title"
         type="text"
+        :disabled="!isEditing"
         v-model="newTitle"
         maxlength="35"
       >
@@ -110,6 +122,7 @@ export default {
   },
 
   methods: {
+    // methods for todo
     createId () {
       return (this.newNote.todos.length) ? this.newNote.todos[this.newNote.todos.length - 1].id + 1 : 0
     },
@@ -135,6 +148,35 @@ export default {
 
     toggleEdit () {
       this.isEditing = !this.isEditing
+    },
+
+    // methods for note.title
+    startEdit () {
+      this.toggleEdit()
+      this.beforeEditCache = this.newTitle
+    },
+
+    doneEdit () {
+      this.curTitle = this.newTitle.trim()
+      if (!this.curTitle) {
+        this.cancelEdit()
+      } else {
+        this.editTitle()
+        this.toggleEdit()
+      }
+    },
+
+    cancelEdit () {
+      this.clearNewTitle()
+      this.toggleEdit()
+    },
+
+    editTitle () {
+      this.newNote.title = this.newTitle
+    },
+
+    clearNewTitle () {
+      this.newTitle = this.newNote.title
     }
   }
 }
