@@ -52,6 +52,10 @@
       >
     </div>
 
+    <AddField
+      @add-element="addTodo"
+    />
+
     <TodoList
       v-if="newNote.todos.length"
       :todos="this.newNote.todos"
@@ -65,6 +69,7 @@
 </template>
 
 <script>
+import AddField from '@/components/AddField'
 import TodoList from '@/components/TodoList'
 import { mapGetters } from 'vuex'
 
@@ -72,6 +77,7 @@ export default {
   name: 'NoteItem',
 
   components: {
+    AddField,
     TodoList
   },
 
