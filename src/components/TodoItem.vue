@@ -7,12 +7,14 @@
         class="todo-item__checkbox"
         type="checkbox"
         :checked="todo.isComplited"
+        :disabled="isPreview || isEditing"
         @change="newTodo.isComplited = !newTodo.isComplited, editTodo()"
       >
       <input
         ref="input"
         class="todo-item__input"
         type="text"
+        :disabled="isPreview || isEditing"
         v-model="newContent"
         :class="{done: todo.isComplited}"
         maxlength="50"
@@ -71,7 +73,8 @@ export default {
     todo: {
       type: Object,
       required: true
-    }
+    },
+    isPreview: Boolean
   },
 
   watch: {

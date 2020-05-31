@@ -1,5 +1,11 @@
 <template>
-  <div id="app">
+  <div id="app" class="app-wrapper">
+
+    <div class="app-conteiner">
+      <h1>Заметки</H1>
+      <router-view />
+    </div>
+
   </div>
 </template>
 
@@ -11,12 +17,30 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
+body {
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+}
+
+.app-wrapper {
+  overflow-y: auto;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 3%;
+
   font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-size: 1.5em;
+
+  text-align: center;
+  color: #222;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+
+.app-container {
+  margin: 0 auto;
 }
 </style>

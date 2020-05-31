@@ -5,6 +5,7 @@
         v-for="todo of todos"
         :todo="todo"
         :key="todo.id"
+        :isPreview="isPreview ? isPreview : false"
         @remove-todo="removeTodo"
         @edit-todo="editTodo"
       />
@@ -18,10 +19,9 @@ import TodoItem from '@/components/TodoItem'
 export default {
   name: 'TodoList',
 
-  data () {
-    return {
-      todos: Array
-    }
+  props: {
+    todos: Array,
+    isPreview: Boolean
   },
 
   components: {
