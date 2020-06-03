@@ -298,6 +298,7 @@ export default {
       font-size: 1.5em;
 
       border: none;
+      background-color: transparent;
     }
 
     &--edit {

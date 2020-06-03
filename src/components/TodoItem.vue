@@ -162,8 +162,9 @@ export default {
       margin: 0;
       padding: .5em;
 
-      border: solid #000 2px;
+      border: solid #520979 2px;
       border-radius: 5px;
+      background-color: #fde7f4;
 
       appearance: none;
 
@@ -179,6 +180,7 @@ export default {
 
         content: '✔';
         text-align: center;
+        color: #ff00e8;
       }
     }
 
@@ -190,6 +192,7 @@ export default {
       word-break: break-all;
       border: none;
       border-radius: 5px;
+      background-color: #fde7f4;
     }
   }
 
@@ -206,6 +209,10 @@ export default {
 
   .done {
     text-decoration: line-through;
+  }
+
+  .focus-within:focus-within {
+    background-color: aqua;
   }
 
 </style>

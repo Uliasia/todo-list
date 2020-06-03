@@ -47,7 +47,10 @@ export default {
     height: 1.2em;
     margin: .3125em;
 
-    font-size: 1.5em
+    font-size: 1.5em;
+
+    border-top: solid 2px #5209793b;
+    border-bottom: solid 2px #5209793b;
 
     &__button {
       width: 1.9em;
@@ -64,7 +67,12 @@ export default {
       padding: 2% 3%;
 
       border: none;
+      outline: none;
+      background-color: #fbddec;
+
+      &:focus {
+        background-color: #fbd9e8;
+      }
     }
   }
-
 </style>

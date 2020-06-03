@@ -75,6 +75,7 @@ export default {
     padding: 5%;
 
     border-radius: 10px;
+    background-color: #d9b4cd6f;
 
     &__header {
       display: flex;
