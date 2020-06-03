@@ -5,10 +5,20 @@
 
       <div class="note__controle edit-panel__wrapper">
         <button class="note__button">
-          <span class="icon-edit"></span>
+          <router-link :to="'/note/' + note.id">
+            <span class="icon-edit"></span>
+          </router-link>
         </button>
+        <Dialog
+          :show="showModalRemove"
+          @positive-answ="$emit('remove-note')"
+          @negative-answ="showModalRemove = false"
+        >
+          <h3 slot="header">Удалить?</h3>
+        </Dialog>
         <button
           class="note__button"
+          @click="showModalRemove = !showModalRemove"
         >
           <span class="icon-remove"></span>
         </button>
@@ -32,13 +42,21 @@
 </template>
 
 <script>
+import Dialog from '@/components/Dialog'
 import TodoList from '@/components/TodoList'
 
 export default {
   name: 'NoteItemPreview',
 
   components: {
+    Dialog,
     TodoList
+  },
+
+  data () {
+    return {
+      showModalRemove: false
+    }
   },
 
   props: {
