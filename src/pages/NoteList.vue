@@ -80,6 +80,12 @@ export default {
     ul {
       margin: 0;
       padding: 0;
+
+      @media screen and (min-width: 1024px) {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+      }
     }
   }
 
