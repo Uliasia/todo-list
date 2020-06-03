@@ -2,6 +2,7 @@
   <div class="note-list">
     <button
       class="note-list__button"
+      @click="createNewNote"
     >
       <span class="icon-plus"></span>
     </button>
@@ -21,7 +22,7 @@
 
 <script>
 import NoteItemPreview from '@/components/NoteItemPreview'
-import { mapMutations, mapGetters } from 'vuex'
+import { mapMutations, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'NoteList',
@@ -35,7 +36,23 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['removeNote'])
+    ...mapMutations(['removeNote', 'addNote']),
+    ...mapActions(['uploadNotes']),
+
+    newNoteId () {
+      return (this.getAllNotesPreview.length) ? this.getAllNotesPreview[this.getAllNotesPreview.length - 1].id + 1 : 0
+    },
+
+    createNewNote () {
+      const newNote = {
+        id: this.newNoteId(),
+        title: 'Заметка',
+        todos: []
+      }
+      this.addNote(newNote)
+      this.uploadNotes(this.$store.state)
+      this.$router.push('/note/' + newNote.id)
+    }
   }
 }
 </script>

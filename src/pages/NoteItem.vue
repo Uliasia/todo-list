@@ -9,19 +9,47 @@
       </button>
 
       <div class="toolbar__right">
-        <button>
+        <button
+          :disabled="cachePosition === 0"
+          @click="undo"
+        >
           <span class="icon-undo"></span>
         </button>
-        <button>
+        <button
+          :disabled="cacheStates.length === cachePosition + 1"
+          @click="redo"
+        >
           <span class="icon-redo"></span>
         </button>
-        <button>
+        <button
+          :disabled="cacheStates.length === 1"
+          @click="showModalCancel = !showModalCancel"
+        >
           <span class="icon-cancel"></span>
         </button>
-        <button>
+        <Dialog
+          :show="showModalCancel"
+          @positive-answ="cancel"
+          @negative-answ="showModalCancel = false"
+        >
+          <h3 slot="header">Отменить все изменения?</h3>
+        </Dialog>
+        <button
+          @click="showModalRemove = !showModalRemove"
+        >
           <span class="icon-remove"></span>
         </button>
-        <button>
+        <Dialog
+          :show="showModalRemove"
+          @positive-answ="remove"
+          @negative-answ="showModalRemove = false"
+        >
+          <h3 slot="header">Удалить?</h3>
+        </Dialog>
+        <button
+          :disabled="cacheStates.length === 1"
+          @click="save"
+        >
           <span class="icon-save"></span>
         </button>
       </div>
@@ -81,14 +109,16 @@
 </template>
 
 <script>
+import Dialog from '@/components/Dialog'
 import AddField from '@/components/AddField'
 import TodoList from '@/components/TodoList'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'NoteItem',
 
   components: {
+    Dialog,
     AddField,
     TodoList
   },
@@ -97,7 +127,11 @@ export default {
     return {
       newTitle: null,
       newNote: null,
-      isEditing: false
+      isEditing: false,
+      cacheStates: [],
+      cachePosition: 0,
+      showModalCancel: false,
+      showModalRemove: false
     }
   },
 
@@ -118,10 +152,14 @@ export default {
 
   beforeMount () {
     this.newNote = JSON.parse(JSON.stringify(this.note)) // deep copy
+    this.cacheStates.push(JSON.stringify(this.note))
     this.newTitle = this.newNote.title
   },
 
   methods: {
+    ...mapMutations(['removeNote', 'saveNote']),
+    ...mapActions(['uploadNotes']),
+
     // methods for todo
     createId () {
       return (this.newNote.todos.length) ? this.newNote.todos[this.newNote.todos.length - 1].id + 1 : 0
@@ -129,6 +167,7 @@ export default {
 
     removeTodo (id) {
       this.newNote.todos = this.newNote.todos.filter(todo => todo.id !== id)
+      this.commitEdit()
     },
 
     addTodo (content) {
@@ -138,16 +177,21 @@ export default {
         isComplited: false
       }
       this.newNote.todos.push(newTodo)
+      this.commitEdit()
     },
 
     editTodo (newTodo) {
       const curTodo = this.newNote.todos.find(todo => todo.id === newTodo.id)
       const index = this.newNote.todos.indexOf(curTodo)
       this.newNote.todos.splice(index, 1, newTodo)
+      this.commitEdit()
     },
 
     toggleEdit () {
       this.isEditing = !this.isEditing
+      if (this.isEditing) {
+        this.$nextTick(() => this.$refs.input.focus())
+      }
     },
 
     // methods for note.title
@@ -167,16 +211,60 @@ export default {
     },
 
     cancelEdit () {
+      this.curTitle = this.beforeEditCache
       this.clearNewTitle()
       this.toggleEdit()
     },
 
     editTitle () {
       this.newNote.title = this.newTitle
+      this.commitEdit()
     },
 
     clearNewTitle () {
       this.newTitle = this.newNote.title
+    },
+
+    // methods for note
+    commitEdit () {
+      this.cachePosition++
+      this.cacheStates.length = this.cachePosition
+      this.cacheStates.push(JSON.stringify(this.newNote))
+    },
+
+    undo () {
+      if (this.cachePosition > 0) {
+        this.cachePosition--
+        this.newNote = JSON.parse(this.cacheStates[this.cachePosition])
+      }
+    },
+
+    redo () {
+      if (this.cachePosition < this.cacheStates.length - 1) {
+        this.cachePosition++
+        this.newNote = JSON.parse(this.cacheStates[this.cachePosition])
+      }
+    },
+
+    cancel () {
+      this.cachePosition = 0
+      this.newNote = JSON.parse(this.cacheStates[this.cachePosition])
+      this.cacheStates.length = 1
+      this.showModalCancel = false
+    },
+
+    save () {
+      this.saveNote(this.newNote)
+      this.uploadNotes(this.$store.state)
+      this.cachePosition = 0
+      this.cacheStates.length = 1
+      this.cacheStates[this.cachePosition] = this.newNote
+    },
+
+    remove () {
+      this.removeNote(this.note.id)
+      this.showModalRemove = false
+      this.$router.push('/')
     }
   }
 }
