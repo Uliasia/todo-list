@@ -73,6 +73,8 @@ export default {
 
     hr {
       width: 75%;
+
+      border-color: #fad4e3;
     }
 
     ul {
