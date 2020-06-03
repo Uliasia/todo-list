@@ -77,6 +77,11 @@ export default {
     border-radius: 10px;
     background-color: #d9b4cd6f;
 
+    @media screen and (min-width: 1024px) {
+      width: 45%;
+      margin: 2% 0;
+    }
+
     &__header {
       display: flex;
       flex-direction: row-reverse;
@@ -92,5 +97,4 @@ export default {
       padding: 2%;
     }
   }
-
 </style>

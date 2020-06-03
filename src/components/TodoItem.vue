@@ -204,6 +204,9 @@ export default {
       padding: .3em;
 
       font-size: .7em;
+      @media screen and (min-width: 425px) {
+        font-size: .9em;
+      }
     }
   }
 
