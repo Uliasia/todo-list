@@ -14,10 +14,11 @@
         ref="input"
         class="todo-item__input"
         type="text"
-        :disabled="isPreview || isEditing"
+        :disabled="isPreview || !isEditing"
         v-model="newContent"
         :class="{done: todo.isComplited}"
         maxlength="50"
+        @blur="blur"
       >
     </div>
 
@@ -85,8 +86,21 @@ export default {
   },
 
   methods: {
+    async blur () {
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(() => resolve(document.querySelector(':focus')))
+      })
+      const e = await promise
+      if (e === null || !e.classList.contains('edit')) {
+        this.cancelEdit()
+      }
+    },
+
     toggleEdit () {
       this.isEditing = !this.isEditing
+      if (this.isEditing) {
+        this.$nextTick(() => this.$refs.input.focus())
+      }
     },
 
     startEdit () {
